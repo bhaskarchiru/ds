@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <time.h>
+#include <string.h>
 
 /*
  * Construct a Binary Search Tree from Pre-order output.
@@ -9,17 +10,18 @@
 
 struct bstnode {
 	int		val;
-	struct bstnode *left;
-	struct bstnode *right;
+	struct bstnode	*left;
+	struct bstnode	*right;
 };
 
 void
 print_inorder(
 	struct bstnode *root)
 {
+	int	val;
 	if (root->left) 
 		print_inorder(root->left);
-	printf(" %d ", root->val);
+	printf(" %d ", val);
 	if (root->right)
 		print_inorder(root->right);
 	return;
@@ -97,8 +99,6 @@ construct_bstutil1(
 	int 	max,
 	int	size)
 {
-	/*printf("idx: %d key: %d min: %d max: %d\n",
-		*idx, key, min, max);*/
 	struct bstnode *root = NULL;
 	if (*idx >= size) {
 		return root;
@@ -107,10 +107,6 @@ construct_bstutil1(
 		root = makenewnode(key);
 		*idx = *idx + 1;
 		if (*idx < size) {
-			/*printf("\t left - idx: %d key: %d min: %d max: %d\n",
-				*idx, arr[*idx], min, key);
-			printf("\t right - idx: %d key: %d min: %d max: %d\n",
-				*idx, arr[*idx], key, max);*/
 			root->left = construct_bstutil1(arr, idx, arr[*idx], min, key, size);
 			root->right = construct_bstutil1(arr, idx, arr[*idx], key, max, size);
 		}  
