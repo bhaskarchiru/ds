@@ -22,22 +22,20 @@ make_bstnode(int val)
 
 
 void
-correct_bstutil(bstnode_t *root, bstnode_t **firstp, bstnode_t **middlep,
+correct_bstutil(bstnode_t *root, bstnode_t **firstp,
 		bstnode_t **lastp, bstnode_t **prevp)
 {
 
 	if(root) {
-		correct_bstutil(root->left, firstp, middlep, lastp, prevp);
+		correct_bstutil(root->left, firstp, lastp, prevp);
 		if(*prevp && root->val < (*prevp)->val) {
-			if(!*firstp) {
+			if(*firstp == NULL) {
 				*firstp = *prevp;
-				*middlep = root;
-			} else {
-				*lastp = root;
 			}
+			*lastp = root;
 		}
 		*prevp = root;
-		correct_bstutil(root->right, firstp, middlep, lastp, prevp);
+		correct_bstutil(root->right, firstp, lastp, prevp);
 	}
 	return;
 }
@@ -55,14 +53,12 @@ void
 correct_bst(bstnode_t *root)
 {
 	int		val;
-	bstnode_t	*prev, *first, *last, *middle;
+	bstnode_t	*prev, *first, *last;
 
-	prev = first = last = middle = NULL;
-	correct_bstutil(root, &first, &middle, &last, &prev);
+	prev = first = last = NULL;
+	correct_bstutil(root, &first, &last, &prev);
 	if(first && last) {
 		swap(&(first->val), &(last->val));
-	} else if(first && middle) {
-		swap(&(first->val), &(middle->val));
 	}
 	return;
 }
