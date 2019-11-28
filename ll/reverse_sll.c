@@ -97,7 +97,7 @@ reverse_list_recursive(node_t *head)
 }
 
 void
-deinit_list(node_t	*head)
+deinit_list(node_t *head)
 {
 	node_t	*next;
 

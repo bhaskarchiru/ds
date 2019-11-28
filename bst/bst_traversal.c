@@ -155,7 +155,39 @@ insert_node(struct bstnode **rootRef, int val)
 	} else {
 		prev->left = makenewnode(val);
 	}
+	return;
 }
+
+void
+morris_inorder(struct bstnode *root)
+{
+	struct bstnode *current, *pre;
+
+	if(root == NULL) {
+		return;
+	}
+	current = root;
+	while(current) {
+		if(current->left == NULL) {
+			printf(" %d ", current->val);
+			current = current->right;
+		} else {
+			pre = current->left;
+			while(pre->right != NULL && pre->right != current) {
+				pre = pre->right;
+			}
+			if(pre->right == NULL) {
+				pre->right = current;
+				current = current->left;
+			} else {
+				pre->right = NULL;
+				printf(" %d ", current->val);
+				current = current->right;
+			}
+		}
+	}
+	return;
+}	
 
 int
 main(int argc, char *argv[])
@@ -172,6 +204,10 @@ main(int argc, char *argv[])
 		insert_node(&root, arr[i]);
 	}
 	printf("Inorder:\n");
+	inorder(root);
+	printf("\n");		
+	
+	printf("Morris Inorder:\n");
 	inorder(root);
 	printf("\n");		
 
