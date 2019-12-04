@@ -40,10 +40,10 @@ LCS(char *str1, char *str2)
 
 	tbl = init_tbl(m, n);
 	for(i = 0; i < m; i++) {
-		tbl[0][i] = 0;
+		tbl[i][0] = 0;
 	}
 	for(i = 0; i < n; i++) {
-		tbl[i][0] = 0;
+		tbl[0][i] = 0;
 	}
 	for(i = 1; i < m; i++) {
 		for(j = 1; j < n; j++) {
@@ -63,8 +63,8 @@ LCS(char *str1, char *str2)
 int
 main(int argc, char *argv[])
 {
-	char	*str1 = "abcabc";
-	char	*str2 = "bcabca";
+	char	*str1 = "abcdefghijkl";
+	char	*str2 = "acegik";
 
 	printf("LCS of %s and %s is %d\n", str1, str2, LCS(str1, str2));
 	return 0;
