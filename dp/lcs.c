@@ -127,14 +127,12 @@ LCS(char *str1, char *str2)
 			k--;
 			i--;
 			j--;
-			cell1 = get_cell(tbl, i, j);
 		} else if(cell1->dir == TOP) {
 			i--;
-			cell1 = get_cell(tbl, i, j);
 		} else {
 			j--;
-			cell1 = get_cell(tbl, i, j);
 		}
+		cell1 = get_cell(tbl, i, j);
 	}
 	deinit_tbl(tbl);
 	return result;
