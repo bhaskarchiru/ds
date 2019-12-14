@@ -10,29 +10,6 @@ typedef struct treenode {
 	struct treenode *right;
 	int		val;
 } treenode_t;
-
-void
-leftBoundaryTraversal(treenode_t *root)
-{
-	if(root == NULL) {
-		return;
-	}
-	if(root->left != NULL) {		
-		do {
-			printf(" %d ", root->val);
-			root = root->left;
-		} while(root->left);
-		return;
-	}
-	if(root->right != NULL) {
-		do {
-			printf(" %d ", root->val);
-			root = root->right;
-		} while(root->right);
-	}
-	return;
-}
-
 void
 rightBoundaryTraversal(treenode_t *root)
 {
@@ -51,7 +28,6 @@ rightBoundaryTraversal(treenode_t *root)
 	return;
 }
 
-#if 0
 void
 leftBoundaryTraversal(treenode_t *root)
 {
@@ -69,25 +45,6 @@ leftBoundaryTraversal(treenode_t *root)
 	}
 	return;
 }
-
-void
-rightBoundaryTraversal(treenode_t *root)
-{
-	if(root == NULL) {
-		return;
-	}
-	if(root->right) {
-		rightBoundaryTraversal(root->right);
-		printf(" %d ", root->val);
-		return;
-	}
-	if(root->left) {
-		rightBoundaryTraversal(root->left);
-		printf(" %d ", root->val);
-	}
-	return;
-}
-#endif
 
 void
 printLeaves(treenode_t *root)
@@ -135,20 +92,20 @@ main(int argc, char *argv[])
 	treenode_t	*tn = make_treenode(1);
 
 	tn->left = make_treenode(2);
-	tn->right = make_treenode(3);
+	//tn->right = make_treenode(3);
 
 	tn->left->left = make_treenode(4);
-	tn->left->right = make_treenode(5);
+	//tn->left->right = make_treenode(5);
 
-	tn->right->left = make_treenode(6);
-	tn->right->right = make_treenode(7);
+	//tn->right->left = make_treenode(6);
+	//tn->right->right = make_treenode(7);
 	
 	//tn->left->left->left = make_treenode(8);
-	//tn->left->left->right = make_treenode(9);
+	tn->left->left->right = make_treenode(9);
 	//tn->left->right->left = make_treenode(10);
-	tn->left->right->right = make_treenode(11);
+	//tn->left->right->right = make_treenode(11);
 
-	tn->right->left->left = make_treenode(12);
+	//tn->right->left->left = make_treenode(12);
 	//tn->right->left->right = make_treenode(13);
 	//tn->right->right->left = make_treenode(14);
 	//tn->right->right->right = make_treenode(15);
