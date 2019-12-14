@@ -1,5 +1,5 @@
 /*
- * Non-recursive pre-order traversal.
+ * Non-recursive post-order traversal.
  */
 
 #include <stdio.h>
@@ -117,7 +117,7 @@ sizeoftree(bstnode_t *root)
 }
 
 void
-print_preorder(bstnode_t *root)
+print_postorder(bstnode_t *root)
 {
 	int		state;
 	stack_t		*s;
@@ -140,6 +140,7 @@ print_preorder(bstnode_t *root)
 
 		switch(state) {
 		case RIGHTVISITED:
+			printf(" %d ", current->val);
 			break;
 
 		case LEFTVISITED:
@@ -153,13 +154,14 @@ print_preorder(bstnode_t *root)
 
 		default:
 			assert(state == UNEXPLORED);	
-			printf(" %d ", current->val);
 			if(current->left != NULL) {
 				push(s, current, LEFTVISITED);
 				push(s, current->left, UNEXPLORED);
 			} else if(current->right != NULL) {
 				push(s, current, RIGHTVISITED);
 				push(s, current->right, UNEXPLORED);
+			} else {
+				printf(" %d ", current->val);
 			}
 			break;
 		}
@@ -175,11 +177,11 @@ main(int argc, char *argv[])
 	bstnode_t	*root;
 
 	/*
-	 *		8
-	 *	   5	    11
-	 *      4     6  10    13
+	 * 		8
+	 *	    5       11
+	 *       4     6 10    13
 	 *
-	 *   Preorder:  8 5 4 6 11 10 13
+	 * Post-order: 4 6 5 10 13 11 8
 	 */
 
 	root = make_bstnode(8);
@@ -190,7 +192,7 @@ main(int argc, char *argv[])
 	root->right->left = make_bstnode(10);
 	root->right->right = make_bstnode(13);
 
-	print_preorder(root);
+	print_postorder(root);
 	printf("\n");
 	return 0;
 }
