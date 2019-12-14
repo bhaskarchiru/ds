@@ -68,35 +68,28 @@ inorder(
 	return;
 }
 
-struct bstnode *
-dequeue(
-	struct bstnode **Q,
-	int		*front)
+struct bstnode * 
+dequeue(struct bstnode **Q, int *frontp)
 {
 
-	(*front)++;
-	return Q[*front - 1];
+	(*frontp)++;
+	return Q[*frontp - 1];
 }
 
 void
-enqueue(
-	struct bstnode	**Q,
-	struct bstnode	*node,
-	int		*rear)
+enqueue(struct bstnode **Q, struct bstnode *node, int *rearp)
 {
 
-	Q[*rear] = node;
-	(*rear)++;	
+	Q[*rearp] = node;
+	(*rearp)++;	
 	return;	
 }
 
 struct bstnode **
-create_queue(
-	int	size,
-	int	*front,
-	int	*rear)
+create_queue(int size, int *frontp, int *rearp)
 {
 	struct bstnode **Q;
+
 	Q = (struct bstnode **)malloc(sizeof (struct bstnode *) * size);
 	*front = 0;
 	*rear = 0;
@@ -108,9 +101,7 @@ create_queue(
  */
 
 void
-levelorder(
-	struct bstnode	*root,
-	int	size)
+levelorder(struct bstnode *root, int size)
 {
 	struct bstnode **Q;
 	int		front, rear;
