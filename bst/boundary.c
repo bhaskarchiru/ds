@@ -52,10 +52,11 @@ printLeaves(treenode_t *root)
 	if(root == NULL) {
 		return;
 	}
-	printLeaves(root->left);
 	if(root->left == NULL && root->right == NULL) {
 		printf(" %d ", root->val);
+		return;
 	}
+	printLeaves(root->left);
 	printLeaves(root->right);
 	return;
 }
