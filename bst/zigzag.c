@@ -125,7 +125,7 @@ sizeOfTree(treenode_t	*root)
 }
 
 void
-level_order(treenode_t *root)
+zigzag_order(treenode_t *root)
 {
 	bool		dir = false;
 	int		i, listsz, n = sizeOfTree(root);
@@ -204,7 +204,7 @@ main(int argc, char *argv[])
 	tn->right->right->left = make_treenode(14);
 	tn->right->right->right = make_treenode(15);
 
-	level_order(tn);
+	zigzag_order(tn);
 	destroy_tree(tn);
 	return 0;
 }
