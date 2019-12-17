@@ -26,7 +26,7 @@ verifyPreorder(int *preorder, int n)
 			}
 			stack[++top] = preorder[i];
 		} else {
-			while(top && stack[top] < preorder[i]) {
+			while(top >= 0 && stack[top] < preorder[i]) {
 				lower_bound = stack[top--];
 			}
 			stack[++top] = preorder[i];
