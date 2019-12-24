@@ -35,7 +35,7 @@ mindistance(int dist[], bool sptset[])
  *		(first iteration will always selects source)
  *	sptset[u] = true
  *	for each neighbouring vertext 'v' of 'u':
- *		if dist[v] < graph[u][v] + dist[u]
+ *		if dist[v] > graph[u][v] + dist[u]
  *			dist[v] = graph[u][v] + dist[u];
  */
 
@@ -55,10 +55,18 @@ dijkstra(int graph[V][V], int src)
 		u = mindistance(dist, sptset);
 		sptset[u] = true;
 		for(v = 0; v < V; v++) {
-			if(!sptset[v] && graph[u][v] && dist[u] != INT_MAX &&
-			   dist[u] + graph[u][v] < dist[v]) {
+
+			/*
+			 * If this neighbour is already not in sptset AND
+			 * If dist[u] is already relaxed further from inital INT_MAX AND
+			 * Distance to reach 'v' is greater than 
+			 *    distance to reach 'u + weight of edge (u, v)
+			 */
+
+			//if(!sptset[v] && graph[u][v] && dist[u] != INT_MAX &&
+			if(graph[u][v] && dist[u] + graph[u][v] < dist[v]) {
 			   dist[v] = dist[u] + graph[u][v];
-			  }
+			}
 		}
 	}
 	for(i = 0; i < V; i++) {

@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define MAX(a, b)	((a) > (b) ? (a) : (b))
+
 typedef struct treenode {
 	struct treenode *left;
 	struct treenode *right;
@@ -124,27 +126,52 @@ sizeOfTree(treenode_t	*root)
 	return 1 + sizeOfTree(root->left) + sizeOfTree(root->right);
 }
 
-void
-zigzag_order(treenode_t *root)
+int
+height(treenode_t *root)
 {
+	if(root == NULL) {
+		return 0;
+	}
+	return 1 + MAX(height(root->left), height(root->right));
+}
+
+/*
+ * Return zig-zag order traversal results in an array of arrays. 
+ *   numlvl - Number of levels
+ *   lvlsizes - Number of nodes in each level
+ */
+
+int **
+zigzag_order(treenode_t *root, int *numlvlp, int **lvlsizesp)
+{
+	int		i, j, h, listsz, n;
+	int		**resultp;
+	int		*printarr, *lvlsizes;
 	bool		dir = false;
-	int		i, listsz, n = sizeOfTree(root);
-	int		*printarr;
 	queue_t		*Q;
 	treenode_t	*node, **list;
 
-	if(n == 0) {
-		return;
+	if(root == NULL) {
+		*numlvlp = 0;
+		*lvlsizesp = NULL;
+		return NULL;
 	}
-	if(n == 1) {
-		printf(" %d ", root->val);
-		return;
+	h = height(root);
+	resultp = (int **)malloc(sizeof(int *) * h);
+	lvlsizes = (int *)malloc(sizeof(int) * h);
+	if(h == 1) {
+		lvlsizes[0] = 1;
+		resultp[0] = (int *)malloc(sizeof(int));
+		resultp[0][0] = root->val;
+		goto out;
 	}
-	Q = init_queue(n);
-	enqueue(Q, root);
 
+	Q = init_queue(sizeOfTree(root));
+	enqueue(Q, root);
+	j = 0;
 	while((list = empty_queue(Q, &listsz)) != NULL) {
-		printarr = malloc(sizeof(int) * listsz);
+		lvlsizes[j] = listsz;
+		printarr = resultp[j] = malloc(sizeof(int) * listsz);
 		for(i = 0; i < listsz; i++) {
 			node = list[i];
 			if(dir) {
@@ -159,14 +186,14 @@ zigzag_order(treenode_t *root)
 				enqueue(Q, node->right);
 			}
 		}
-		for(i = 0; i < listsz; i++) {
-			printf(" %d ", printarr[i]);
-		}
+		j++;
 		dir = !dir;
-		printf("\n");
 	}
-	printf("\n");
-	return;
+
+out:
+	*lvlsizesp = lvlsizes;
+	*numlvlp = h;
+	return resultp;
 }
 
 void
@@ -185,6 +212,10 @@ destroy_tree(treenode_t *root)
 int
 main(int argc, char *argv[])
 {
+	int		**result;
+	int		*total;
+	int		numlvls;
+	int		*lvlsizes = NULL;
 	treenode_t	*tn;
 
 	tn = make_treenode(1);
@@ -204,7 +235,13 @@ main(int argc, char *argv[])
 	tn->right->right->left = make_treenode(14);
 	tn->right->right->right = make_treenode(15);
 
-	zigzag_order(tn);
+	result = zigzag_order(tn, &numlvls, &lvlsizes);
+	for(int i = 0; i < numlvls; i++) {
+		for(int j = 0; j < lvlsizes[i]; j++) {
+			printf(" %d ", result[i][j]);
+		}
+		printf("\n");
+	}
 	destroy_tree(tn);
 	return 0;
 }
