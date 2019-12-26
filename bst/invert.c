@@ -6,21 +6,24 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-typedef struct treenode {
-	struct treenode *left;
-	struct treenode *right;
+typedef struct TreeNode {
+	struct TreeNode *left;
+	struct TreeNode *right;
 	int		val;
 } treenode_t;
 
+typedef struct qnode {
+	struct qnode	*next;
+	treenode_t	*tnode;
+} qnode_t;
+
 /*
- * Queue of treenodes
+ * Queue
  */
 
 typedef struct queue {
-	treenode_t	**q_tnodes;
-	int		q_rear;
-	int		q_front;
-	int		q_capacity;
+	qnode_t		*head;
+	int		size;
 } queue_t;
 
 treenode_t *
@@ -35,112 +38,102 @@ make_treenode(int val)
 }
 
 queue_t *
-init_queue(int capacity)
+init_queue(void)
 {
 
-	queue_t	*Q;
-
-	Q = malloc(sizeof(queue_t));
-	Q->q_tnodes = malloc(sizeof(treenode_t *) * capacity);
-	Q->q_capacity = capacity;
-	Q->q_rear = Q->q_front = -1;
-	return Q;
+	return calloc(1, sizeof(queue_t));
 }
 
 void
 deinit_queue(queue_t *Q)
 {
+	qnode_t	*current, *next;
 
-	free(Q->q_tnodes);
+	current = Q->head;
+	while(current) {
+		next = current->next;
+		current->next = NULL;
+		free(current);
+		current = next;
+	}
 	free(Q);
 	return;
 }
 
-void
-enqueue(queue_t *Q, treenode_t *node)
+qnode_t *
+make_qnode(treenode_t *tnode)
 {
-	int rear = ++Q->q_rear;
+	qnode_t	*qn = malloc(sizeof(qnode_t));
+	qn->tnode = tnode;
+	qn->next = NULL;
+	return qn;
+}
 
-	*(Q->q_tnodes + rear) = node;
-	if(Q->q_front == -1) {
-		Q->q_front = Q->q_rear;
+void
+enqueue(queue_t *Q, treenode_t *tnode)
+{
+	qnode_t	*qn, *current;
+
+	qn = make_qnode(tnode);
+	if(Q->head == NULL) {
+		Q->head = qn;
+		Q->size++;
+		return;
 	}
+	current = Q->head;
+	while(current->next != NULL) current = current->next;
+	current->next = qn;
+	Q->size++;
 	return;
 }
 
 treenode_t *
 dequeue(queue_t *Q)
 {
+	qnode_t		*current, *next;
 	treenode_t	*tn;
-	if(Q->q_front == -1) {
+
+	if(Q->head == NULL) {
 		return NULL;
 	}
-	tn = *(Q->q_tnodes + Q->q_front);
-	if(Q->q_front == Q->q_rear) {
-		Q->q_front = -1;
-		Q->q_rear = -1;
-	} else {
-		Q->q_front++;
-	}
+
+	current = Q->head;
+	next = current->next;
+	current->next = NULL;
+	Q->head = next;
+	Q->size--;
+	tn = current->tnode;
+	free(current);
 	return tn;
 }
 
-/*
- * Empty the treenodes into queue and return it.
- */
-
-treenode_t **
-empty_queue(queue_t *Q, int *listsz)
-{
-	int		idx;
-	treenode_t	**list;
-
-	if(Q->q_rear == -1) {
-		*listsz = 0;
-		return NULL;
-	}
-	*listsz = Q->q_rear - Q->q_front + 1;
-	list = calloc(1, sizeof(treenode_t *) * *listsz);
-	for(idx = 0; idx < *listsz; idx++) {
-		list[idx] = dequeue(Q);
-	}
-	return list;
-}
 
 bool
 is_empty(queue_t *Q)
 {
-	return Q->q_front == -1;
-}
-
-int
-sizeOfTree(treenode_t	*root)
-{
-
-	if(root == NULL) {
-		return 0;
-	}
-	return 1 + sizeOfTree(root->left) + sizeOfTree(root->right);
+	return Q->size == 0;
 }
 
 void
-invert_tree(treenode_t *root)
+level_order(treenode_t	*root)
 {
-	int		i, listsz, n = sizeOfTree(root);
-	int		*valarr;
+	int		i, lvlsize;
 	queue_t		*Q;
-	treenode_t	*node, **list;
+	treenode_t	*node;
 
-	if(n == 0 || n == 1) {
+	if(root == NULL) {
 		return;
 	}
-	Q = init_queue(n);
+	if(root->left == NULL &&  root->right == NULL) {
+		return;
+	}
+	Q = init_queue();
 	enqueue(Q, root);
-	while((list = empty_queue(Q, &listsz)) != NULL) {
-		valarr = malloc(sizeof(int) * listsz);
-		for(i = 0; i < listsz; i++) {
-			node = list[i];
-			valarr[n - i - 1] = node->val;
+	while(!is_empty(Q)) {
+		lvlsize = Q->size;
+		for(i = 0; i < lvlsize; i++) {
+			node = dequeue(Q);
+			printf(" %d ", node->val);
 			if(node->left) {
 				enqueue(Q, node->left);
 			}
@@ -148,11 +141,43 @@ invert_tree(treenode_t *root)
 				enqueue(Q, node->right);
 			}
 		}
-		for(i = 0; i < listsz; i++) {
-			node = list[i];
-			node->val = valarr[i];
+	}
+	deinit_queue(Q);
+	return;
+}
+
+void
+invert_tree(treenode_t *root)
+{
+	int		i, lvlsize;
+	queue_t		*Q;
+	treenode_t	*node, *left, *right;
+
+	if(root == NULL) {
+		return;
+	}
+	if(root->left == NULL &&  root->right == NULL) {
+		return;
+	}
+	Q = init_queue();
+	enqueue(Q, root);
+	while(!is_empty(Q)) {
+		lvlsize = Q->size;
+		for(i = 0; i < lvlsize; i++) {
+			node = dequeue(Q);
+			left = node->left;
+			right = node->right;
+			node->right = left;
+			node->left = right;
+			if(node->left) {
+				enqueue(Q, node->left);
+			}
+			if(node->right) {
+				enqueue(Q, node->right);
+			}
 		}
 	}
+	deinit_queue(Q);
 	return;
 }
 
@@ -191,7 +216,13 @@ main(int argc, char *argv[])
 	tn->right->right->left = make_treenode(14);
 	tn->right->right->right = make_treenode(15);
 
+	printf("Level order before invert\n");
+	level_order(tn);
+	printf("\n");
 	invert_tree(tn);
+	printf("Level order after invert\n");
+	level_order(tn);
+	printf("\n");
 	destroy_tree(tn);
 	return 0;
 }
