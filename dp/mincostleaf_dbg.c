@@ -77,30 +77,56 @@ mct_putmax(mct_t *mct, int rownum, int colnum, int val)
 }
 
 int
-doMCTFromLeafValues(int *arr, int low, int high, mct_t *mct)
+doMCTFromLeafValues(int *arr, int low, int high, int depth, mct_t *mct)
 {
 	int i, k, n, min = 0, result;
+	int a, b, c, d;
+	if(depth == 0) {
+		printf("------------\n");
+	}
+	for(i = 0; i < depth; i++) {
+		printf("\t");
+	}
 
+	printf("MCT low: %d high: %d\n", low, high);
 	if(arr == NULL) {
 		return 0;
 	}
 	n = high - low + 1;
 	if(n == 1) {
+		for(i = 0; i < depth; i++) {
+			printf("\t");
+		}
+		printf("MCT low: %d high: %d result: %d\n", low, high, 0);
 		mct_putsum(mct, low, high, 0);
 		return 0;
 	}
 	if((result = mct_getsum(mct, low, high)) != -1) {
+		for(i = 0; i < depth; i++) {
+			printf("\t");
+		}
+		printf("MCT low: %d high: %d result: %d (from memo)\n", low, high, arr[low]);
 		return result;
 	}
 	for(i = low; i < high; i++) {
-
+																           
 		/*
 		 * Partition into [low, i] [i + 1, high]
 		 */
 
-		result = mct_getmax(mct, low, i) * mct_getmax(mct, i + 1, high) +
-			 doMCTFromLeafValues(arr, low, i, mct) +
-			 doMCTFromLeafValues(arr, i + 1, high, mct);
+		for(k = 0; k < depth; k++) printf("\t");
+		printf("Partition: [%d %d][%d %d] - [%d %d][%d %d]\n",
+			low, i, i + 1, high,
+			arr[low], arr[i], arr[i + 1], arr[high]);
+		a = mct_getmax(mct, low, i);
+		b = mct_getmax(mct, i + 1, high);
+		c = doMCTFromLeafValues(arr, low, i, depth + 1, mct);
+		d = doMCTFromLeafValues(arr, i + 1, high, depth + 1, mct);
+		result = a * b + c + d;
+		for(k = 0; k < depth; k++) printf("\t");
+		printf("Partition: [%d %d][%d %d] - [%d %d][%d %d] result: %d (%d * %d + %d + %d)\n",
+		       low, i, i + 1, high,
+		       arr[low], arr[i], arr[i + 1], arr[high], result, a, b, c, d);
 		if(i == low || min > result) {
 			min = result;
 		}
@@ -111,7 +137,7 @@ doMCTFromLeafValues(int *arr, int low, int high, mct_t *mct)
 
 int mctFromLeafValues(int* arr, int arrSize)
 {
-	int	i, j, max, result;
+	int	result, i, j, max;
 	mct_t	*mct;
 
 	mct = mct_init(arrSize, arrSize);
@@ -123,7 +149,7 @@ int mctFromLeafValues(int* arr, int arrSize)
 			mct_putmax(mct, i, j, max);
 		}
 	}
-	result = doMCTFromLeafValues(arr, 0, arrSize - 1, mct);
+	result = doMCTFromLeafValues(arr, 0, arrSize - 1, 0, mct);
 	mct_deinit(mct);
 	return result;
 }
@@ -137,5 +163,4 @@ main(int argc, char *argv[])
 	printf("Minimum cost tree from leaf values: %d\n", mctFromLeafValues(arr, n));
 	return 0;
 }
-
 
