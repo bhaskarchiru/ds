@@ -101,7 +101,7 @@ nextGreaterNumber(int n)
 	swap(&arr[i], &arr[maxidx]);
 
 	/*
-	 * Reverse the prefix until pivot.
+	 * Reverse the prefix
 	 */
 
 	reverse(arr, 0, i - 1);

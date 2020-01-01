@@ -157,7 +157,7 @@ int mctFromLeafValues(int* arr, int arrSize)
 int
 main(int argc, char *argv[])
 {
-	int	n, arr[] = {6, 2, 4};//15, 13, 5, 3, 15};
+	int	n, arr[] = {6, 5, 4, 1, 2, 3};
 
 	n = sizeof(arr)/sizeof(arr[0]);
 	printf("Minimum cost tree from leaf values: %d\n", mctFromLeafValues(arr, n));

@@ -68,28 +68,35 @@ inorder(
 	return;
 }
 
-struct bstnode * 
-dequeue(struct bstnode **Q, int *frontp)
+struct bstnode *
+dequeue(
+	struct bstnode **Q,
+	int		*front)
 {
 
-	(*frontp)++;
-	return Q[*frontp - 1];
+	(*front)++;
+	return Q[*front - 1];
 }
 
 void
-enqueue(struct bstnode **Q, struct bstnode *node, int *rearp)
+enqueue(
+	struct bstnode	**Q,
+	struct bstnode	*node,
+	int		*rear)
 {
 
-	Q[*rearp] = node;
-	(*rearp)++;	
+	Q[*rear] = node;
+	(*rear)++;	
 	return;	
 }
 
 struct bstnode **
-create_queue(int size, int *frontp, int *rearp)
+create_queue(
+	int	size,
+	int	*front,
+	int	*rear)
 {
 	struct bstnode **Q;
-
 	Q = (struct bstnode **)malloc(sizeof (struct bstnode *) * size);
 	*front = 0;
 	*rear = 0;
@@ -101,7 +108,9 @@ create_queue(int size, int *frontp, int *rearp)
  */
 
 void
-levelorder(struct bstnode *root, int size)
+levelorder(
+	struct bstnode	*root,
+	int	size)
 {
 	struct bstnode **Q;
 	int		front, rear;
@@ -146,39 +155,7 @@ insert_node(struct bstnode **rootRef, int val)
 	} else {
 		prev->left = makenewnode(val);
 	}
-	return;
 }
-
-void
-morris_inorder(struct bstnode *root)
-{
-	struct bstnode *current, *pre;
-
-	if(root == NULL) {
-		return;
-	}
-	current = root;
-	while(current) {
-		if(current->left == NULL) {
-			printf(" %d ", current->val);
-			current = current->right;
-		} else {
-			pre = current->left;
-			while(pre->right != NULL && pre->right != current) {
-				pre = pre->right;
-			}
-			if(pre->right == NULL) {
-				pre->right = current;
-				current = current->left;
-			} else {
-				pre->right = NULL;
-				printf(" %d ", current->val);
-				current = current->right;
-			}
-		}
-	}
-	return;
-}	
 
 int
 main(int argc, char *argv[])
@@ -195,10 +172,6 @@ main(int argc, char *argv[])
 		insert_node(&root, arr[i]);
 	}
 	printf("Inorder:\n");
-	inorder(root);
-	printf("\n");		
-	
-	printf("Morris Inorder:\n");
 	inorder(root);
 	printf("\n");		
 
