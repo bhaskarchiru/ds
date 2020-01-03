@@ -41,7 +41,7 @@ doBuildTree(int *pre, int plow, int phigh, int *in, int ilow, int ihigh)
 	int		leftsize;
 	struct TreeNode *root;
 
-	//printf("plow: %d phigh: %d ilow: %d ihigh: %d\n", plow, phigh, ilow, ihigh);
+	printf("plow: %d phigh: %d ilow: %d ihigh: %d\n", plow, phigh, ilow, ihigh);
 	if(ilow > ihigh) {
 		return NULL;
 	}
@@ -50,9 +50,9 @@ doBuildTree(int *pre, int plow, int phigh, int *in, int ilow, int ihigh)
 		return root;
 	}
 	rootidx = find_node_byval(in, pre[plow], ilow, ihigh);
-	leftsize = rootidx - ilow - 1;
-	root->left = doBuildTree(pre, plow + 1, plow + 1 + leftsize, in, ilow, rootidx - 1);
-	root->right = doBuildTree(pre, plow + leftsize + 2, phigh, in, rootidx + 1, ihigh);
+	leftsize = rootidx - ilow;
+	root->left = doBuildTree(pre, plow + 1, plow + leftsize, in, ilow, rootidx - 1);
+	root->right = doBuildTree(pre, plow + leftsize + 1, phigh, in, rootidx + 1, ihigh);
 	return root;
 }
 

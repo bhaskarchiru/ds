@@ -14,7 +14,8 @@ doverifyPreorder(int *preorder, int low, int high, int min, int max)
 {
 	int i, root;
 
-	if(low >= high) {
+	printf("low: %d high: %d min: %d max: %d\n", low, high, min, max);
+	if(low > high) {
 		return true;
 	}
 	root = preorder[low];
@@ -41,8 +42,8 @@ int
 main(int argc, char *argv[])
 {
 
-	int preorder[] = {5, 2, 6, 1, 3};
-	int n = sizeof(preorder)/sizeof(preorder[0]);
+	int	preorder[] = {5, 2, 6, 1, 3};
+	int	n = sizeof(preorder)/sizeof(preorder[0]);
 
 	printf("Given preorder %s from a bst.\n",
 	       verifyPreorder(preorder, n) ? "is" : "is not");
