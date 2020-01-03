@@ -14,18 +14,25 @@ print_arr(int *a, int n)
 }
 
 void
+swap(int *a, int *b)
+{
+	int	c = *a;
+	*a = *b;
+	*b = c;
+	return;
+}
+
+void
 insertion_sort(int *a, int n)
 {
-	int	i, j, tmp;
+	int	i, j;
 
 	for(i = 1; i < n; i++) {
 		for(j = i; j > 0; j--) {
 			if(a[j] > a[j - 1]) {
 				continue;
 			}
-			tmp = a[j];
-			a[j] = a[j - 1];
-			a[j - 1] = tmp;
+			swap(&a[j], &a[j - 1]);
 		}
 		print_arr(a, n);
 	}
