@@ -1,5 +1,5 @@
 /*
- * Morris inorder traversal
+ * Morris preorder traversal
  */
 
 #include <stdio.h>
