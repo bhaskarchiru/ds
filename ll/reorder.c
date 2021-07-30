@@ -1,5 +1,8 @@
 /*
  * 143. Reorder List
+ *  L0 -> L1 -> L2 -> L3 -> ... Ln -> NULL
+ *   Into
+ *  L0 -> Ln -> L1 -> Ln-1 -> L2 -> Ln-2 -> .... -> NULL
  */
 
 #include <stdio.h>
@@ -54,12 +57,17 @@ reverse_list(struct ListNode *head)
 	return prev;
 }
 
+/*
+ * Break the list into half, reverse the second half,
+ * and then merge the halves.
+ */
+
 void
 reorderList(struct ListNode **headRef)
 {
-	bool	even = false;
+	bool		even = false;
 	struct ListNode	*result = NULL, *list1 = NULL, *list2 = NULL;
-	struct ListNode *head, *next1, *next2, *fast, *slow, *prev;
+	struct ListNode	*head, *next1, *next2, *fast, *slow, *prev;
 
 	head = *headRef;
 	if(head == NULL || head->next == NULL) {
@@ -84,7 +92,21 @@ reorderList(struct ListNode **headRef)
 		slow->next = NULL;
 	}
 	list1 = head;
+	slow = list1;
+	printf("list1:\t");
+	while(slow) {
+		printf("%d -> ", slow->val);
+		slow = slow->next;
+	}
+	printf("NULL\n");
 	list2 = reverse_list(list2);
+	slow = list2;
+	printf("list2:\t");
+	while(slow) {
+		printf("%d -> ", slow->val);
+		slow = slow->next;
+	}
+	printf("NULL\n");
 	prev = NULL;
 	while(list1 != NULL && list2 != NULL) {
 		next1 = list1->next;
@@ -120,9 +142,11 @@ main(int argc, char *argv[])
 	list = add_to_tail(list, 3);
 	list = add_to_tail(list, 4);
 	list = add_to_tail(list, 5);
+	list = add_to_tail(list, 6);
+	list = add_to_tail(list, 7);
 	reorderList(&list);
 	while(list) {
-		printf(" %d ", list->val);
+		printf("%d -> ", list->val);
 		list = list->next;
 	}
 	printf(" NULL \n");
