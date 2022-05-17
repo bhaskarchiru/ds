@@ -18,6 +18,10 @@
 #define LEFT_CHILD(x)	(2 * (x) + 1)
 #define RIGHT_CHILD(x)	(2 * (x) + 2)
 
+/*
+ * Linked list of edges.
+ */
+
 typedef struct edgenode {
 	struct edgenode	*next;
 	int		dst;	/* Destination vertex */
