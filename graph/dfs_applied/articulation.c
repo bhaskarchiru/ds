@@ -200,5 +200,4 @@ main(int argc, char *argv[])
 		free(arti);
 	}
 	return 0;
-
 }

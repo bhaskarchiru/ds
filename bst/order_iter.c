@@ -47,7 +47,7 @@ stk_push(stk_t *s, treenode_t *tnode, int state)
 	stknode_t	*snode;
 
 	idx = s->top + 1;
-	if(idx  == s->capacity - 1) {
+	if(idx == s->capacity - 1) {
 		new_capacity = s->capacity << 1;
 		s->nodes = (stknode_t *)realloc(s->nodes, sizeof(stknode_t) * new_capacity);
 		s->capacity = new_capacity;
@@ -56,6 +56,7 @@ stk_push(stk_t *s, treenode_t *tnode, int state)
 	snode->tnode = tnode;
 	snode->state = state;
 	s->top++;
+	//printf("After pushing (%d, %d) - top: %d\n", tnode->val, state, s->top);
 	return;
 }
 
@@ -69,15 +70,8 @@ stk_pop(stk_t *s)
 	}
 	snode = &s->nodes[s->top];
 	s->top--;
+	//printf("After popping (%d, %d) - top: %d\n", snode->tnode->val, snode->state, s->top);
 	return snode;
-}
-
-stknode_t *
-stk_top(stk_t *s)
-{
-
-	if(s->top == -1) return NULL;
-	return &s->nodes[s->top];
 }
 
 void
@@ -105,7 +99,7 @@ print_order(treenode_t *root, int print_state)
 	}
 	s = stk_init(20);
 	stk_push(s, root, VISITED);
-	while((stknode = stk_top(s)) != NULL) {
+	while((stknode = stk_pop(s)) != NULL) {
 		state = stknode->state;
 		tnode = stknode->tnode;
 		switch(state) {
@@ -113,7 +107,7 @@ print_order(treenode_t *root, int print_state)
 			if(print_state == VISITED) {
 				printf(" %d ", tnode->val);
 			}
-			stknode->state++;
+			stk_push(s, tnode, ++state);
 			if(tnode->left) {
 				stk_push(s, tnode->left, VISITED);
 			}
@@ -123,7 +117,7 @@ print_order(treenode_t *root, int print_state)
 			if(print_state == LEFT_EXPLORED) {
 				printf(" %d ", tnode->val);
 			}
-			stknode->state++;
+			stk_push(s, tnode, ++state);
 			if(tnode->right) {
 				stk_push(s, tnode->right, VISITED);
 			}
@@ -133,7 +127,6 @@ print_order(treenode_t *root, int print_state)
 			if(print_state == RIGHT_EXPLORED) {
 				printf(" %d ", tnode->val);
 			}
-			(void)stk_pop(s);
 			break;
 
 		default:
